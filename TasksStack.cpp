@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+
 int strlen(const char*string)
 {
 	int length = 0;
@@ -10,48 +11,8 @@ int strlen(const char*string)
 	return length;
 }
 
-class Mystring
-{
-public:
-	Mystring()
-	{
-		str = nullptr;
-	}
 
-	Mystring(char*st)
-	{
-		int length = strlen(st);
-		str = new char[length + 1];
-		for (int i = 0; i < length; ++i)
-		{
-			str[i] = st[i];
-		}
-
-		str[length] = '\0';
-	}
-	Mystring(const char*st)
-	{
-		int length = strlen(st);
-		str = new char[length + 1];
-		for (int i = 0; i < length; ++i)
-		{
-			str[i] = st[i];
-		}
-
-		str[length] = '\0';
-	}
-
-	~Mystring()
-	{
-		delete[] this->str;
-	}
-
-private:
-	char* str;
-};
-
-
-
+//Implementation of the stack with templates
 template<class T>
 struct Node
 {
@@ -139,7 +100,7 @@ public:
 };
 
 
-
+// Task number four, parantheses balance checking
 void balance_check(const char*s)
 {
 	Stack<char>*stack = new Stack<char>();
@@ -193,6 +154,8 @@ void printstack(Stack<char>*c)
 	}
 }
 
+
+//Task number five, function to calculate postfix expression's result. For example 82+5*9+=
 void postfix_calc(Stack<char>*s)
 {
 	Stack<int>*nums = new Stack<int>();
