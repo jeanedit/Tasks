@@ -23,6 +23,10 @@ struct Node
 		val = value;
 		next = NULL;
 	}
+	~Node()
+	{
+		delete next;
+	}
 };
 
 template<class T>
@@ -38,8 +42,8 @@ public:
 	}
 	~List()
 	{
-		delete[] head;
-		delete[] tail;
+		delete head;
+		delete tail;
 	}
 };
 
@@ -95,46 +99,69 @@ public:
 	}
 	~Stack()
 	{
-		delete[] list;
+		delete list;
 	}
 };
 
 
 // Task number four, parantheses balance checking
-void balance_check(const char*s)
+// Balance checking function with using 3 stacks
+void balance_check_v2(const char*s)
 {
-	Stack<char>*stack = new Stack<char>();
 	int i = 0;
-	int count = 0;
+	
+	Stack<char>*parenth = new Stack<char>();
+	Stack<char>*parenth1 = new Stack<char>();
+	Stack<char>*parenth2 = new Stack<char>();
+
 	while (s[i] != '\0')
 	{
-		stack->push(s[i]);
+		parenth->push(s[i]);
 		++i;
 	}
-	//printf("%c\n", stack->pop());
 
-	if (stack->size() == 0) return;
+	if (parenth->peek() == '(') printf("Parentheses are unbalanced\n");
 
-	if (stack->pop() == ')') --count;
-	else
+
+	while (parenth->size() != 1)
 	{
-		printf("Parentheses are unbalanced\n");
+		char prth = parenth->pop();
+		printf("prth:%c\n", prth);
+		if (prth == '(') parenth1->push(prth);
+		else parenth2->push(prth);
+	}
+
+	if (parenth->pop() == '('&&parenth1->size()+1 == parenth2->size())
+		printf("Parentheses are balanced\n");
+	else printf("Parentheses are unbalanced\n");
+
+}
+
+//Balance checking function with using 2 stacks and checking first and last elements of the char's array
+void balance_check(const char*s)
+{
+	int i = 0;
+
+	Stack<char>*parenth1 = new Stack<char>();
+	Stack<char>*parenth2 = new Stack<char>();
+
+	if (s[0] == ')' || s[strlen(s) - 1] == '(')
+	{
+		printf("parentheses are unbalanced\n");
 		return;
 	}
-
-	while (stack->size() != 1)
+	while (s[i] != '\0')
 	{
-		char val = stack->pop();
-		if (val == '(') ++count;
-		if (val == ')') --count;
+		if (s[i] == '(') parenth1->push(s[i]);
+		else parenth2->push(s[i]);
+		++i;
 	}
 
-	if (stack->pop() == '('&&++count == 0)
-		printf("Parentheses are balanced\n");
-	else
-	{
-		printf("Parentheses are unbalanced\n");
-	}
+	if (parenth1->size() == parenth2->size()) 
+		printf("parentheses are balanced\n");
+
+	else  
+		printf("parentheses are unbalanced\n");
 }
 
 void printstack(Stack<int>*c)
@@ -163,60 +190,40 @@ void postfix_calc(Stack<char>*s)
 	int i = 0;
 	int result = 0;
 
-
-	/*while (s[i] != '\0')
-	{
-		if (s[i] != '+'&& s[i] != '*' && s[i] != '=')
-		{
-			nums->push(s[i] - '0');
-		}
-		input->push(s[i]);
-		++i;
-	}*/
-
-
-
 	while (s->size() != 0)
 	{
 		char sign = s->pop();
 
-
-		if (sign != '+'&&sign != '*'&&sign != '=')
-		{
-			nums->push(sign-'0');
-			printf("Nums:%i\n", nums->list->head->val);
-		}
-
-		else if (sign == '+')
+		if (sign == '+'||sign=='*')
 		{
 			int a = nums->pop();
 			int b = nums->pop();
-			result = a + b;
-			printf("a:%i\tb:%i\n", a, b);
+
+			if(sign=='+')  result = a + b;
+
+			else result = a * b;
+
 			nums->push(result);
-			printf("Head+:%i\n", nums->list->head->val);
-		}
-		else if (sign == '*')
-		{
-			int a = nums->pop();
-			int b = nums->pop();
-			printf("a:%i\tb:%i\n", a, b);
-			result = a * b;
-			nums->push(result);
-			printf("Head*:%i\n", nums->list->head->val);
 		}
 		else if(sign=='=')
 			printf("result:%i\n", nums->pop());
+		else
+		{
+			nums->push(sign - '0');
+		}
 	}
-
+	
 }
-
 
 int main()
 {
-	balance_check("()()())())()())()");
-	
+	int main()
+{
+	balance_check("(()))");
+	balance_check_v2("((())");
+		
 	Stack<char>*expr = new Stack<char>();
+		
 	expr->push('=');
 	expr->push('+');
 	expr->push('9');
@@ -225,16 +232,8 @@ int main()
 	expr->push('+');
 	expr->push('2');
 	expr->push('8');
+		
 	postfix_calc(expr);
 
-	/*Stack<char>*stack = new Stack<char>();
-	stack->push('(');
-	stack->push('(');
-	stack->push(')');
-	stack->push('(');
-	stack->push('(');
-	stack->push(')');
-	*/
-
-
+	
 }
